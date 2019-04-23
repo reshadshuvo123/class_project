@@ -1,0 +1,119 @@
+
+<html><head>
+	
+	</head><body><header>
+	
+	</header>
+
+	<section>
+	</section>
+
+
+
+
+
+	<form action="#" onsubmit="return false;">
+		<center><input type="text" id="project" style="width: 50%;">
+		<button id="submit" onclick="goToProject()">Go</button></center>
+	</form>
+
+
+	<script type="text/javascript">
+
+		var Liberal = document.createElement('p');
+			Liberal.id = "Liberal";
+			
+		
+			
+		function goToProject(){
+			var header = document.querySelector('header');
+			var section = document.querySelector('section');
+			var project = document.getElementById("project").value;
+			
+			var	requestURL = "http://2f6a33f6.ngrok.io/_all/_search?q=" + project;
+			
+			var	request = new XMLHttpRequest();
+			
+			request.open('GET', requestURL);
+			request.responseType = 'json';
+			request.send();
+			request.onload = function() 
+				{
+					var pages = request.response;
+					populateHeader(pages);
+					document.body.appendChild(Liberal);
+				}
+				
+			
+			
+				
+		function populateHeader(jsonObj) 
+		{
+			while (Liberal.hasChildNodes()) {
+				Liberal.removeChild(Liberal.lastChild);
+			}
+			//Liberal.textContent = "Fack checked News";
+			//Liberal.innerHTML = "<b>" + "Fack checked News" + "<b>";
+			var count = jsonObj.hits["total"];
+			if (count>10)
+				count = 10;
+			var i = 0;
+			for(i=0; i<count; i++)
+			{
+				var title = document.createElement('p');
+				title.className = "solid";
+				title.textContent = 'Title: ' + jsonObj.hits.hits[i]._source["title"];
+				title.style.color = "red";
+				Liberal.appendChild(title);
+				
+				var pageContent = document.createElement('p');
+				pageContent.style.color = "green";
+				pageContent.textContent = 'Actual Page links: ';
+				title.appendChild(pageContent);
+				
+				
+				var temp_link = document.createElement("a");
+				temp_link.href = jsonObj.hits.hits[i]._source["link"];
+				temp_link.target = '_blank';
+				//temp_link.textContent = '<br>'+'Actual Page links: ';
+				temp_link.innerHTML = jsonObj.hits.hits[i]._source["link"];
+				title.appendChild(temp_link);
+				
+				//var desc = document.createElement('p');
+				//desc.textContent = 'Actual Page links: ' + temp_link.innerHTML;
+				//title.appendChild(desc);
+				
+				var catLinkText = document.createElement('p');
+				catLinkText.style.color = "green";
+				catLinkText.textContent = 'Content_category_link: ';
+				//catLinkText.innerHTML = "<center>" + 'Content_category_link: ' + "</center>";
+				title.appendChild(catLinkText);
+				
+				//var cat_page = document.createElement('p');
+				//cat_page.style.color = "red";
+				//cat_page.textContent =  jsonObj.hits.hits[i]._source["page"];
+				//title.appendChild(cat_page);
+				
+				var cat_link = document.createElement("a");
+				cat_link.href = jsonObj.hits.hits[i]._source["page"];
+				cat_link.target = '_blank';
+				//temp_link.textContent = '<br>'+'Actual Page links: ';
+				cat_link.innerHTML = jsonObj.hits.hits[i]._source["page"] ;
+				title.appendChild(cat_link);
+				
+				var lineElement = document.createElement("hr");
+				lineElement.style.color = "teal";
+				title.appendChild(lineElement);
+				
+				
+			}
+		}
+		
+		
+		
+    }
+	</script>
+
+
+
+</body></html>
